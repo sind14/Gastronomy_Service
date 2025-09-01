@@ -71,6 +71,13 @@ class Inventory(models.Model):
     def __str__(self):
         return self.name
 
+
+class OrderStatus(models.TextChoices):
+    PENDING = "pending", "Pending"
+    COMPLETED = "completed", "Completed"
+    CANCELLED = "cancelled", "Cancelled"
+
+
 class Order(models.Model):
     order_date = models.DateTimeField(null=True, blank=True)
     order_created = models.DateTimeField(auto_now_add=True)
@@ -81,4 +88,22 @@ class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders")
     dishes = models.ManyToManyField(Dish, related_name="orders", blank=True)
     inventories = models.ManyToManyField(Inventory, related_name="orders", blank=True)
+    status = models.CharField(max_length=20, choices=OrderStatus.choices, default=OrderStatus.PENDING)
+    cancel_reason = models.TextField(blank=True, null=True)
 
+
+    def mark_completed(self):
+        self.status = OrderStatus.COMPLETED
+        self.save()
+
+
+    def mark_cancelled(self, reason: str):
+        self.status = OrderStatus.CANCELLED
+        self.cancel_reason = reason
+        self.save()
+
+
+    def mark_pending(self):
+        self.status = OrderStatus.PENDING
+        self.cancel_reason = None
+        self.save()
