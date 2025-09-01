@@ -32,6 +32,7 @@ class Client(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone_num = PhoneNumberField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     pesel = models.CharField(max_length=11, unique=True)
     companies = models.ManyToManyField(Company, related_name="clients")
 
@@ -83,25 +84,30 @@ class Order(models.Model):
     order_created = models.DateTimeField(auto_now_add=True)
     realization_type = models.ForeignKey(RealizationType, on_delete=models.PROTECT)
     people_num = models.PositiveIntegerField()
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders")
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, related_name="orders")
-    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders")
+    address = models.ForeignKey(
+        Address, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders"
+    )
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, null=True, blank=True, related_name="orders"
+    )
+    client = models.ForeignKey(
+        Client, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders"
+    )
     dishes = models.ManyToManyField(Dish, related_name="orders", blank=True)
     inventories = models.ManyToManyField(Inventory, related_name="orders", blank=True)
-    status = models.CharField(max_length=20, choices=OrderStatus.choices, default=OrderStatus.PENDING)
+    status = models.CharField(
+        max_length=20, choices=OrderStatus.choices, default=OrderStatus.PENDING
+    )
     cancel_reason = models.TextField(blank=True, null=True)
-
 
     def mark_completed(self):
         self.status = OrderStatus.COMPLETED
         self.save()
 
-
     def mark_cancelled(self, reason: str):
         self.status = OrderStatus.CANCELLED
         self.cancel_reason = reason
         self.save()
-
 
     def mark_pending(self):
         self.status = OrderStatus.PENDING
