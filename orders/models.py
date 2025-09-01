@@ -9,6 +9,39 @@ class RealizationType(models.Model):
         return self.name
 
 
+class Inventory(models.Model):
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+
+    def __str__(self):
+        return self.name
+
+
+class Dish(models.Model):
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    dishes = models.ManyToManyField(Dish, related_name="category", blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Menu(models.Model):
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    groups = models.ManyToManyField(Category, related_name="menus")
+
+    def __str__(self):
+        return self.name
+
+
 class Address(models.Model):
     city = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
@@ -38,39 +71,6 @@ class Client(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name
-
-
-class Dish(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-    dishes = models.ManyToManyField(Dish, related_name="groups", blank=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Menu(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
-    groups = models.ManyToManyField(Category, related_name="menus")
-
-    def __str__(self):
-        return self.name
-
-
-class Inventory(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.DecimalField(decimal_places=2, max_digits=10)
-
-    def __str__(self):
-        return self.name
 
 
 class OrderStatus(models.TextChoices):
