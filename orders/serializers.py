@@ -128,7 +128,7 @@ class ClientCreateSerializer(BaseClientSerializer):
     companies = serializers.PrimaryKeyRelatedField(many=True, queryset=Company.objects.all())
 
 
-class BaseOrderSerializer(serializers.ModelSerializer):
+class OrderReadSerializer(serializers.ModelSerializer):
     client = ClientReadSerializer(read_only=True)
     company = CompanyReadSerializer(read_only=True)
     realization_type = RealizationTypeSerializer(read_only=True)
@@ -156,7 +156,7 @@ class BaseOrderSerializer(serializers.ModelSerializer):
         read_only_fields = ["order_created", "total_price"]
 
 
-class OrderCreateSerializer(BaseOrderSerializer):
+class OrderCreateSerializer(OrderReadSerializer):
     client = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all())
     company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=False, allow_null=True)
     realization_type = serializers.PrimaryKeyRelatedField(queryset=RealizationType.objects.all())
@@ -165,11 +165,11 @@ class OrderCreateSerializer(BaseOrderSerializer):
     inventories = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all(), many=True, required=False)
 
 
-class SavedOrderSerializer(BaseOrderSerializer):
+class SavedOrderReadSerializer(OrderReadSerializer):
     dishes = SavedDishSerializer(many=True, read_only=True)
     inventories = SavedInventorySerializer(many=True, read_only=True)
 
-    class Meta(BaseOrderSerializer.Meta):
+    class Meta(OrderReadSerializer.Meta):
         model = SavedOrder
         fields = "__all__"
         read_only_fields = "__all__"
