@@ -41,7 +41,7 @@ class BaseModelViewSet(viewsets.ModelViewSet):
     read_serializer_class = None
 
     def get_serializer_class(self) -> Type[BaseSerializer]:
-        if self.action in ['create', 'update', 'partial_update'] and self.create_serializer_class:
+        if self.action in ["create", "update", "partial_update"] and self.create_serializer_class:
             return self.create_serializer_class
         elif self.read_serializer_class:
             return self.read_serializer_class
