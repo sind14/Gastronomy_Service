@@ -1,6 +1,9 @@
 from typing import Type
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import BaseSerializer
+
+from config.permissions import IsAdminOrReadOnly
 from orders.models import (
     RealizationType,
     Dish,
@@ -54,63 +57,75 @@ class BaseModelViewSet(viewsets.ModelViewSet):
 class RealizationTypeViewSet(viewsets.ModelViewSet):
     queryset = RealizationType.objects.all()
     serializer_class = RealizationTypeSerializer
+    permission_classes = (IsAdminOrReadOnly, )
 
 
 class DishViewSet(viewsets.ModelViewSet):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class InventoryViewSet(viewsets.ModelViewSet):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class CategoryViewSet(BaseModelViewSet):
     queryset = Category.objects.all()
     create_serializer_class = CategoryCreateSerializer
     read_serializer_class = CategoryReadSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class MenuViewSet(BaseModelViewSet):
     queryset = Menu.objects.all()
     create_serializer_class = MenuCreateSerializer
     read_serializer_class = MenuReadSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class CompanyViewSet(BaseModelViewSet):
     queryset = Company.objects.all()
     create_serializer_class = CompanyCreateSerializer
     read_serializer_class = CompanyReadSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class ClientViewSet(BaseModelViewSet):
     queryset = Client.objects.all()
     create_serializer_class = ClientCreateSerializer
     read_serializer_class = ClientReadSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class OrderViewSet(BaseModelViewSet):
     queryset = Order.objects.all()
     create_serializer_class = OrderCreateSerializer
     read_serializer_class = OrderReadSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class SavedDishViewSet(viewsets.ModelViewSet):
     queryset = SavedDish.objects.all()
     serializer_class = SavedDishSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class SavedInventoryViewSet(viewsets.ModelViewSet):
     queryset = SavedInventory.objects.all()
     serializer_class = SavedInventorySerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class SavedOrderViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SavedOrder.objects.all()
     serializer_class = SavedOrderReadSerializer
+    permission_classes = (IsAdminOrReadOnly,)
